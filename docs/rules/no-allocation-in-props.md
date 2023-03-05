@@ -1,5 +1,6 @@
-# No Array or Object Allocation in Props (react/no-allocation-in-props)
+# Disallow array and object literals as props values (`react/no-allocation-in-props`)
 
+<!-- end auto-generated rule header -->
 An array literal `[]` or an object literal `{}` in a prop will create a brand new object on every single render. This is bad for performance, as it will result in the garbage collector being invoked way more than is necessary. It may also cause unnecessary re-renders if a brand new object is passed as a prop to a component that uses reference equality check on the prop to determine if it should update.
 
 ## Rule Details
@@ -9,6 +10,7 @@ The following patterns are considered warnings:
 ```jsx
 <Foo bar={[1, 2, 3]}></Foo>
 ```
+
 ```jsx
 <Foo bar={{ foo: 1 }}></Foo>
 ```
@@ -17,11 +19,29 @@ The following patterns are considered warnings:
 
 ```js
 "react/no-allocation-in-props": [<enabled>, {
-  "ignoreDOMComponents": <boolean> || false
+  "ignoreDOMComponents": <boolean> || false,
+  "allowArrays": <boolean> || false,
+  "allowObjects": <boolean> || false
 }]
 ```
 
 ### `ignoreDOMComponents`
+
+When `true` the following is **not** considered a warning:
+
+```jsx
+<div style={{ foo: 1 }} />
+```
+
+### `allowArrays`
+
+When `true` the following is **not** considered a warning:
+
+```jsx
+<div style={[1, 2, 3]} />
+```
+
+### `allowObjects`
 
 When `true` the following is **not** considered a warning:
 

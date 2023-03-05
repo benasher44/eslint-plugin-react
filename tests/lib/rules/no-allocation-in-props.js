@@ -2,108 +2,102 @@
  * @fileoverview Disallow array and object literals as props values.
  * @author alexzherdev
  */
+
 'use strict';
 
 // -----------------------------------------------------------------------------
 // Requirements
 // -----------------------------------------------------------------------------
 
-const rule = require('../../../lib/rules/no-allocation-in-props');
 const RuleTester = require('eslint').RuleTester;
+const rule = require('../../../lib/rules/no-allocation-in-props');
+const parsers = require('../../helpers/parsers');
 
 const parserOptions = {
   ecmaVersion: 2018,
   sourceType: 'module',
   ecmaFeatures: {
-    jsx: true
-  }
+    jsx: true,
+  },
 };
 
 // -----------------------------------------------------------------------------
 // Tests
 // -----------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({parserOptions});
+const ruleTester = new RuleTester({ parserOptions });
 ruleTester.run('no-allocation-in-props', rule, {
 
-  valid: [
+  valid: parsers.all([
     // Not covered by the rule
     {
-      code: 'React.createElement()'
-    },
-    {
-      code: '<Foo bar={foo} />'
+      code: 'React.createElement()',
     },
     {
       code: '<Foo bar={foo} />',
-      parser: 'babel-eslint'
     },
     {
-      code: 'React.createElement(Foo, { bar: foo })'
+      code: '<Foo bar={foo} />',
     },
     {
       code: 'React.createElement(Foo, { bar: foo })',
-      parser: 'babel-eslint'
+    },
+    {
+      code: 'React.createElement(Foo, { bar: foo })',
     },
 
     // allowArrays
     {
       code: '<Foo bar={[1, 2, 3]} />',
-      options: [{allowArrays: true}]
+      options: [{ allowArrays: true }],
     },
     {
       code: '<Foo bar={[1, 2, 3]} />',
-      options: [{allowArrays: true}],
-      parser: 'babel-eslint'
+      options: [{ allowArrays: true }],
     },
     {
       code: 'React.createElement(Foo, { bar: [1, 2, 3] })',
-      options: [{allowArrays: true}]
+      options: [{ allowArrays: true }],
     },
     {
       code: 'React.createElement(Foo, { bar: [1, 2, 3] })',
-      options: [{allowArrays: true}],
-      parser: 'babel-eslint'
+      options: [{ allowArrays: true }],
     },
 
     // allowObjects
     {
       code: '<Foo bar={{ foo: 1 }} />',
-      options: [{allowObjects: true}]
+      options: [{ allowObjects: true }],
     },
     {
       code: '<Foo bar={{ foo: 1 }} />',
-      options: [{allowObjects: true}],
-      parser: 'babel-eslint'
+      options: [{ allowObjects: true }],
     },
     {
       code: 'React.createElement(Foo, { bar: { foo: 1 }})',
-      options: [{allowObjects: true}]
+      options: [{ allowObjects: true }],
     },
     {
       code: 'React.createElement(Foo, { bar: { foo: 1 }})',
-      options: [{allowObjects: true}],
-      parser: 'babel-eslint'
+      options: [{ allowObjects: true }],
     },
 
     // ignore DOM components
     {
       code: '<div style={{ foo: 1 }}></div>',
-      options: [{ignoreDOMComponents: true}]
+      options: [{ ignoreDOMComponents: true }],
     },
     {
       code: '<div style={{ foo: 1 }}></div>',
-      options: [{ignoreDOMComponents: true}],
-      parser: 'babel-eslint'
+      options: [{ ignoreDOMComponents: true }],
     },
     {
       code: 'React.createElement("div", { style: { foo: 1 }})',
-      options: [{ignoreDOMComponents: true}]
+      options: [{ ignoreDOMComponents: true }],
     },
     {
       code: 'React.createElement("div", { style: { foo: 1 }})',
-      options: [{ignoreDOMComponents: true}],
-      parser: 'babel-eslint'
+      options: [{ ignoreDOMComponents: true }],
     },
     {
       code: `
@@ -114,7 +108,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      options: [{ignoreDOMComponents: true}]
+      options: [{ ignoreDOMComponents: true }],
     },
     {
       code: `
@@ -125,8 +119,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      options: [{ignoreDOMComponents: true}],
-      parser: 'babel-eslint'
+      options: [{ ignoreDOMComponents: true }],
     },
     {
       code: `
@@ -137,7 +130,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      options: [{ignoreDOMComponents: true}]
+      options: [{ ignoreDOMComponents: true }],
     },
     {
       code: `
@@ -148,30 +141,27 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      options: [{ignoreDOMComponents: true}],
-      parser: 'babel-eslint'
-    }
-  ],
+      options: [{ ignoreDOMComponents: true }],
+    },
+  ]),
 
-  invalid: [
+  invalid: parsers.all([
     // arrays
     {
       code: '<Foo bar={[1, 2, 3]} />',
-      errors: [{message: 'Props should not use array allocations'}]
+      errors: [{ message: 'Props should not use array allocations' }],
     },
     {
       code: '<Foo bar={[1, 2, 3]} />',
-      errors: [{message: 'Props should not use array allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use array allocations' }],
     },
     {
       code: 'React.createElement(Foo, { bar: [1, 2, 3] })',
-      errors: [{message: 'Props should not use array allocations'}]
+      errors: [{ message: 'Props should not use array allocations' }],
     },
     {
       code: 'React.createElement(Foo, { bar: [1, 2, 3] })',
-      errors: [{message: 'Props should not use array allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use array allocations' }],
     },
     {
       code: `
@@ -182,7 +172,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use array allocations'}]
+      errors: [{ message: 'Props should not use array allocations' }],
     },
     {
       code: `
@@ -193,8 +183,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use array allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use array allocations' }],
     },
     {
       code: `
@@ -205,7 +194,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use array allocations'}]
+      errors: [{ message: 'Props should not use array allocations' }],
     },
     {
       code: `
@@ -216,8 +205,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use array allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use array allocations' }],
     },
     {
       code: `
@@ -231,7 +219,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use array allocations'}]
+      errors: [{ message: 'Props should not use array allocations' }],
     },
     {
       code: `
@@ -245,8 +233,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use array allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use array allocations' }],
     },
     {
       code: `
@@ -260,7 +247,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use array allocations'}]
+      errors: [{ message: 'Props should not use array allocations' }],
     },
     {
       code: `
@@ -274,28 +261,25 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use array allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use array allocations' }],
     },
 
     // objects
     {
       code: '<Foo bar={{ foo: 1 }} />',
-      errors: [{message: 'Props should not use object allocations'}]
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: '<Foo bar={{ foo: 1 }} />',
-      errors: [{message: 'Props should not use object allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: 'React.createElement(Foo, { bar: { foo: 1 }})',
-      errors: [{message: 'Props should not use object allocations'}]
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: 'React.createElement(Foo, { bar: { foo: 1 }})',
-      errors: [{message: 'Props should not use object allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: `
@@ -306,7 +290,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use object allocations'}]
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: `
@@ -317,8 +301,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use object allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: `
@@ -329,7 +312,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use object allocations'}]
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: `
@@ -340,8 +323,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use object allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: `
@@ -352,7 +334,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use object allocations'}]
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: `
@@ -363,8 +345,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use object allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: `
@@ -375,7 +356,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use object allocations'}]
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: `
@@ -386,8 +367,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use object allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: `
@@ -401,7 +381,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use object allocations'}]
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: `
@@ -415,8 +395,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use object allocations'}],
-      parser: 'babel-eslint'
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: `
@@ -430,7 +409,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use object allocations'}]
+      errors: [{ message: 'Props should not use object allocations' }],
     },
     {
       code: `
@@ -444,8 +423,7 @@ ruleTester.run('no-allocation-in-props', rule, {
           }
         };
       `,
-      errors: [{message: 'Props should not use object allocations'}],
-      parser: 'babel-eslint'
-    }
-  ]
+      errors: [{ message: 'Props should not use object allocations' }],
+    },
+  ]),
 });
